@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Tab Banner</title><link rel="stylesheet" href="popup.css"></head>
+<body><header><span class="mark" aria-hidden="true">T</span><div><h1>Tab Banner</h1><p>A clearer name for this tab.</p></div></header>
+<main><form id="form"><label for="title">Tab title</label><input id="title" maxlength="160" placeholder="Give this tab a name" autocomplete="off" required><p id="site" class="site"></p>
+<fieldset><legend>Keep this title</legend><div class="choices"><label><input type="radio" name="mode" value="temporary" checked><span>Temporarily<small>For this tab, this session</small></span></label><label><input type="radio" name="mode" value="permanent"><span>For this URL<small>Remember on future visits</small></span></label></div></fieldset>
+<p class="hint" id="hint">Stays on reload. Ends when you change URL or close Brave.</p><button id="save" type="submit">Set title <span aria-hidden="true">→</span></button><button id="reset" type="button" class="secondary">Restore original title</button></form>
+<p id="status" role="status" aria-live="polite"></p><details><summary>Saved titles <span id="count">0</span></summary><div id="saved"></div></details></main><footer>Stored on your device. No tracking.</footer><script src="popup.js"></script></body></html>
