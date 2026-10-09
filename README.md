@@ -19,7 +19,7 @@ Open a website, click Tab Banner, enter a name, choose a mode, and click **Set t
 - **Restore original title:** removes both the current temporary title and the saved rule for that URL.
 - Expand **Saved titles** to remove individual rules.
 
-Browser internal pages, the Chrome Web Store, and built-in PDF viewer pages cannot be renamed reliably. Website title changes are watched and the custom title reapplied. Changes to page URLs are detected within approximately half a second.
+Browser internal pages, the Chrome Web Store, and built-in PDF viewer pages cannot be renamed reliably. Website title changes are watched and the custom title reapplied. Competing title changes are handled on a short timer to avoid repeated title-update loops. Changes to page URLs are detected within approximately half a second.
 
 ## Privacy
 Titles and associated URLs stay in local extension storage on your device. There are no network requests, analytics, accounts, or external services. Temporary rules are kept in browser-session storage. Removing a saved rule does not revoke the site permission already granted; manage site access in Brave's extension settings.

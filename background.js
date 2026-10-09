@@ -12,7 +12,7 @@ async function inject(tabId, expectedURL) {
   if (!url) return;
   if (expectedURL && tab.url !== expectedURL) throw new Error('The tab changed. Open the popup again.');
   const title = await titleFor(tabId, url);
-  const result = await chrome.tabs.sendMessage(tabId, {type:'apply',url,title}, {frameId:0});
+  const result = await chrome.tabs.sendMessage(tabId, {type:'apply',url,title,reassert:!!title && tab.title !== title}, {frameId:0});
   if (!result?.ok) throw new Error(result?.error || 'Brave could not change this tab title. Reload the page and try again.');
   return result;
 }
@@ -73,8 +73,32 @@ chrome.runtime.onMessage.addListener((message,sender,respond) => {
   }).then(result => respond(result), error => respond({error:error.message}));
   return true;
 });
-chrome.tabs.onUpdated.addListener((id,change) => { if(change.status === 'complete' || change.url) injectQuietly(id); });
+const titleRepairs = new Set();
+const lastTitleRepair = new Map();
+async function repairTabTitle(id) {
+  // Title notifications can arrive out of order, including our own transition.
+  // Bound repairs so a competing site cannot create a rapid feedback loop.
+  const now = Date.now();
+  if (titleRepairs.has(id) || now - (lastTitleRepair.get(id) || 0) < 1000) return;
+  titleRepairs.add(id);
+  try {
+    const tab = await chrome.tabs.get(id);
+    if (!tab.url) return;
+    const title = await titleFor(id, tab.url);
+    if (title && tab.title !== title) {
+      lastTitleRepair.set(id, now);
+      await inject(id, tab.url);
+    }
+  } catch (_) {
+    // The tab may have navigated, closed, or lost optional site access.
+  } finally { titleRepairs.delete(id); }
+}
+chrome.tabs.onUpdated.addListener((id,change) => {
+  if (change.status === 'complete' || change.url) injectQuietly(id);
+  else if (change.title) repairTabTitle(id);
+});
 chrome.tabs.onRemoved.addListener(id => {
+  lastTitleRepair.delete(id);
   serial = serial.then(async () => {
     const temporary = (await chrome.storage.session.get('temporary')).temporary || {};
     delete temporary[id]; await chrome.storage.session.set({temporary});
