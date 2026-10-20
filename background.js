@@ -1,4 +1,20 @@
 async function data() { return (await chrome.storage.local.get('titles')).titles || {}; }
+async function recordRename() {
+  const {review = {}} = await chrome.storage.local.get('review');
+  if (review.shownAt) return;
+  await chrome.storage.local.set({review:{...review,
+    firstUsedAt:review.firstUsedAt || Date.now(),
+    renames:Math.min(5, (review.renames || 0) + 1)}});
+}
+async function reviewPrompt() {
+  const {review = {}} = await chrome.storage.local.get('review');
+  const now = Date.now();
+  if (review.shownAt || !review.firstUsedAt || (review.renames || 0) < 5 ||
+      now - review.firstUsedAt < 7 * 24 * 60 * 60 * 1000) return {show:false};
+  // Claim the single invitation before rendering, including across popup closes.
+  await chrome.storage.local.set({review:{...review,shownAt:now}});
+  return {show:true};
+}
 async function titleFor(tabId, url) {
   const temporary = (await chrome.storage.session.get('temporary')).temporary || {};
   if (temporary[tabId]?.url === url) return temporary[tabId].title;
@@ -25,6 +41,7 @@ async function registerOrigins() {
   if (granted.length) await chrome.scripting.registerContentScripts([{id:'saved-titles',matches:granted,js:['content.js'],runAt:'document_start',persistAcrossSessions:true}]);
 }
 async function handle(message, sender) {
+  if (message.type === 'reviewPrompt') return reviewPrompt();
   if (message.type === 'get') return {title:await titleFor(sender.tab.id, message.url)};
   if (message.type === 'list') return {titles:await data()};
   if (message.type === 'save' || message.type === 'reset') {
@@ -42,6 +59,10 @@ async function handle(message, sender) {
     await chrome.storage.local.set({titles});
     await registerOrigins();
     await inject(tab.id, message.url);
+    if (message.type === 'save') {
+      // Optional invitation state must never turn a successful rename into an error.
+      try { await recordRename(); } catch (_) {}
+    }
     return {ok:true};
   }
   if (message.type === 'remove') {

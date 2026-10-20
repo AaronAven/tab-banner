@@ -1,6 +1,6 @@
 # Tab Banner Privacy Policy
 
-Effective date: October 9, 2026
+Effective date: October 20, 2026
 
 Tab Banner lets you rename browser tabs temporarily or save a custom title for an exact URL.
 
@@ -12,9 +12,11 @@ Saved rules contain a URL and your custom title. They are stored locally on your
 
 Tab Banner does not read page bodies, emails, passwords, payment details, or cookies for its functionality. It does not maintain a general browsing-history log.
 
+For its optional, one-time review invitation, Tab Banner stores the date of your first successful rename after the feature is introduced, a successful-rename count capped at five, and whether the invitation has been shown. This state stays in local extension storage, is never transmitted, and is not used for analytics. The invitation appears only inside the popup after at least five renames and seven days, and does not reappear after being shown. Selecting the review link opens the Chrome Web Store at your request; any review you choose to submit there is handled by Google.
+
 ## How information is used
 
-Information is used only to display, apply, remember, manage, and restore tab titles. Tab Banner does not use information for advertising, profiling, analytics, creditworthiness, or lending.
+Information is used only to display, apply, remember, manage, and restore tab titles, and to time and suppress the optional review invitation. Tab Banner does not use information for advertising, profiling, analytics, creditworthiness, or lending.
 
 ## Sharing and transmission
 
@@ -33,9 +35,11 @@ All executable code is included in the extension package. Tab Banner does not lo
 
 Saved rules remain on your device until you remove them through Saved titles, restore the original title for that URL, or uninstall the extension. Temporary rules end when the URL changes, the tab closes, or the browser session ends. You can manage or revoke site access in your browser's extension settings. Removing a saved rule does not automatically revoke previously granted site access.
 
+Review-invitation state remains locally until the extension is uninstalled or its local storage is cleared, so dismissing or closing the invitation does not cause it to appear again.
+
 ## Limited use
 
-Tab Banner's use of information adheres to the Chrome Web Store User Data Policy, including its Limited Use requirements. Data is used solely for the extension's tab-renaming features.
+Tab Banner's use of information adheres to the Chrome Web Store User Data Policy, including its Limited Use requirements. Data is used solely for the extension's described features.
 
 ## Changes and questions
 

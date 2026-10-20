@@ -21,10 +21,15 @@ $('form').onsubmit=async event=>{
   }catch(e){status(e.message,true);}finally{$('save').disabled=false;}
 };
 $('reset').onclick=async()=>{try{await request({type:'reset',tabId:tab.id,url:tab.url});await renderSaved();status('Original title restored. Saved title cleared for this URL.');}catch(e){status(e.message,true);}};
+$('review-dismiss').onclick=()=>{$('review').hidden=true;};
+$('review-link').onclick=()=>{$('review').hidden=true;};
 (async()=>{try{
   [tab]=await chrome.tabs.query({active:true,currentWindow:true});const titles=await renderSaved();
   if(!tab?.url || !/^https?:/.test(tab.url)){ $('title').disabled=true;$('save').disabled=true;$('reset').disabled=true;status('Open a normal website to rename its tab. Browser pages and built-in PDF tabs are unsupported.',true);return; }
   $('site').textContent=tab.url;$('site').title=tab.url;$('title').value=titles[tab.url]||tab.title||'';
   if(titles[tab.url])document.querySelector('[value=permanent]').checked=true;
   $('title').focus();$('title').select();
+  // Only a deliberate popup visit can show the one-time invitation. Never
+  // interrupt a rename, open a tab automatically, or affect core error messages.
+  try { const invitation=await request({type:'reviewPrompt'});$('review').hidden=!invitation?.show; } catch (_) {}
 }catch(e){status(e.message,true);}})();

@@ -24,6 +24,11 @@ Browser internal pages, the Chrome Web Store, and built-in PDF viewer pages cann
 ## Privacy
 Titles and associated URLs stay in local extension storage on your device. There are no network requests, analytics, accounts, or external services. Temporary rules are kept in browser-session storage. Removing a saved rule does not revoke the site permission already granted; manage site access in Brave's extension settings.
 
+## Optional review invitation
+After at least five successful manual renames and seven days since the first one, a small invitation can appear the next time you open the popup on a supported website. It asks for an honest review and links to the Chrome Web Store reviews page. It never opens a tab without your click, sends notifications, or changes the page you are browsing.
+
+The invitation is shown only once per installation, even if you close the popup without choosing an option. **No thanks** dismisses it immediately. Timing, a rename count capped at five, and whether the invitation has been shown are stored only on your device; no usage information is sent anywhere. The counter starts with version 1.0.6; previous usage is not inferred from saved URLs.
+
 ## Develop
 No build step or dependencies are needed. Download this repository using **Code → Download ZIP**, extract it, and load the folder containing `manifest.json` using the steps above.
 
